@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block body %}
+<script src="/static/js/moment.min.js"></script>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ url_for('profile') }}">MyApp</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ url_for('logout') }}" class="adm">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="profile_info">
+    <h1>{{ name }}</h1>
+    <p><em>Surname: </em>{{ surname }}</p>
+    <p><em>City: </em>{{ city }}</p>
+    {% if last_seen %}
+        <p><em>Last seen: {{ momentjs(last_seen).calendar() }}</em></p>
+    {% endif %}
+</div>
+
+
+<div class="friends">
+    <h3>{{ name }}'s friends</h3>
+    <ul style="list-style-type:none">
+        {% for user in my_friends %}
+            {% if user == my_name %}
+                <li><a href="{{ url_for('profile') }}">{{ user }}</a></li>
+            {% else %}
+                <li><a href="{{ url_for('other_user_profile', user=user) }}">{{ user }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+<p class="page_views_counter"><em>Page views counter : </em>{{ counter }}</p>
+
+{% if not flag_for_adding %}
+    <div class="row">
+        <div class="col-sm-2 col-md-offset-0">
+            <form method=POST action="{{ url_for('add', new_friend=name) }}">
+                <button type="submit" class="btn btn-primary btn-block">Add to friends</button>
+            </form>
+            <br>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
